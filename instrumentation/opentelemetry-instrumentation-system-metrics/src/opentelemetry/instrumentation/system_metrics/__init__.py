@@ -415,8 +415,10 @@ class SystemMetricsInstrumentor(BaseInstrumentor):
         self, options: CallbackOptions
     ) -> Iterable[Observation]:
         """Observer callback for Number of file descriptors in use by the process"""
+        # if running on Windows, the method num_fds() is not available so, return -1 as a placeholder
+        is_windows = sys.platform == "win32"
         yield Observation(
-            self._proc.num_fds(),
+            self._proc.num_fds() if not is_windows else -1,
             self._open_file_descriptor_count_labels.copy(),
         )
 
